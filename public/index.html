@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <!-- for azure:  all these links must use https, not http -->
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <title>Practice Tracker</title>
+
+  <link rel="stylesheet" href="themes/customtheme2.css" />
+  <link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+  <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
+  <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+  <script>$( function() {
+   $( "#datepicker" ).datepicker();
+ } );</script>
+  <script src="javascripts/main.js"></script>
+ </head>
+
+ <body>
+
+<div data-role="page" id="Welcome">
+
+   <div data-role="header" data-theme='a'> 
+      <h1 id= "title">Hobby Tracker</h1>
+   </div>
+
+   <div data-role="content" data-theme='a'>
+      <h2>Welcome!</h2>
+      With this app you will be able to keep track of your hobby habits. <br/>
+      You will be see a graph of your hours by date, as well as a chart of the time you spent. <br/>
+      You will also be about to schedule future times and input past times<br/>
+      and will be able to time yourself and add that time to graph.  <br/> 
+
+   <a href="#Home">Get Started</a>
+   </div>
+
+   <div data-role="footer" data-theme='a'>
+      <h1>Lablanc inc.</h1>
+   </div>
+
+</div>
+
+//*********************************************************
+
+<div data-role="page" id="Home">
+
+   <div data-role="header" data-theme='a'> 
+      <h1>Hobby Tracker</h1>
+      <div data-role="navbar">
+            <ul>
+                  <li><a href="#Schedule" data-icon="calendar" >Schedule</a></li>
+                  <li><a href="#Welcome" data-icon="forward" >Welcome</a></li>
+                  <li><a href="#Timer" data-icon="clock" id="timer" >Timer</a> </li>
+            </ul>
+         </div>
+
+   </div>
+
+   <div data-role="content" data-theme='a'>
+     <h2 id= "title">Your work so far!</h2>
+     <div>
+     <img src=images\Fakegraph.png height=300px width=400px>
+     </div>
+     <div>
+      <table data-role="table" data-mode="reflow" class="ui-responsive table-stroke">
+         <thead>
+             <tr>
+                 <th data-priority="persist">Date</th>
+                 <th data-priority="1">Activity</th>
+                 <th data-priority="1">Time dedicated</th>
+             </tr>
+         </thead>
+         <tbody id="disTab">
+             <tr>
+                 <th>This</th>
+                 <td>Should</td>
+                 <td>Be Deleted</td>
+             </tr>
+         </tbody>
+     </table>
+     </div>
+   </div>
+
+   <div data-role="footer" data-theme='a'>
+      <h1>Lablanc inc.</h1>
+   </div>
+
+</div>
+
+//******************************************************
+
+<div data-role="page" id="Schedule">
+
+            <div data-role="header" data-theme='a'> 
+            <h1>Hobby Tracker</h1>
+               <div data-role="navbar">
+                     <ul>
+                         <li><a href="#Home" data-icon="home">Home</a></li>
+                         <li><a href="#Welcome" data-icon="forward">Welcome</a></li>
+                         <li><a href="#Timer" data-icon="clock" id="timer">Timer</a> </li>
+                     </ul>
+                  </div>
+
+            </div>    
+            <div data-role="content" data-theme='a'>
+               <h2 id= "title">Calender</h2>
+               Date: <input type="text" id="datepicker" data-theme='c'>
+               Activity <input type=text id=activity data-theme='c'>
+               Time <input type="datetime" id=time data-theme='c'>
+            </div>
+    
+            <div data-role="footer"  data-theme='a'>
+                <h1>Lablanc inc.</h1>
+            </div>
+    
+</div>
+
+
+//*********************************************************
+
+<div data-role="page" id="Timer">
+
+            <div data-role="header" data-theme='a'> 
+            <h1>Hobby Tracker</h1>
+               <div data-role="navbar">
+                     <ul>
+                        <li><a href="#Schedule" data-icon="calendar">Schedule</a></li>
+                        <li><a href="#Welcome" data-icon="forward">Welcome</a></li>
+                        <li><a href="#Home" data-icon="home">Home</a> </li>
+                     </ul>
+                  </div>
+
+            </div>
+    
+            <div data-role="content" data-theme='a'>
+               <h2 id= "title">Timer</h2>
+               <div>
+                  Activity <input type="text" id="tactivity" data-theme='c'>
+               </div>
+
+               <div>
+                  <h1>Stopwatch</h1>
+                  <div class="stopwatch" data-autostart="false">
+                     <div class="time">
+                         <span class="hours"></span> : 
+                         <span class="minutes"></span> : 
+                         <span class="seconds"></span> : 
+                         <span class="milliseconds"></span>
+                     </div>
+                     <div class="controls">
+                         <!-- Some configurability -->
+                         <button class="toggle" data-pausetext="Pause" data-resumetext="Resume" data-theme='c'>Start</button>
+                         <button class="reset" data-theme='c'>Reset</button>
+                     </div>
+                  </div>
+                 <input type="submit" id="tsubmitbtn" value="Submit" data-theme='c'>
+               </div>               
+
+            </div>
+    
+            <div data-role="footer"  data-theme='a'>
+                <h1>Lablanc inc.</h1>
+            </div>
+    
+</div>
+
+ </body>
+ </html> 
