@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
 
     let tracker = [];
+    let toDO = [];
 
     
     let A = new Activity("Guitar (temp)","5/15/20","3:00" );
@@ -20,10 +21,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
     tracker.push(B);
     tracker.push(C);
 
+    $( function() {
+        $( "#datepicker" ).datepicker();
+      } );
 
     let tsubmit = document.getElementById("tsubmitbtn");
+    let ssubmit = document.getElementById("ssubmitbtn");
     let disTab = document.getElementById("disTab");
-    let tactivity;
+    let schTab = document.getElementById("schTab");
+    let tactivity, sactivity, sh, sm;
 
     $(document).on('pagebeforeshow', '#Home', updateTable());
     $('#timer').on('click',  function () {
@@ -31,6 +37,23 @@ document.addEventListener("DOMContentLoaded", function (event) {
         $("#tactivity").val("");
     }); 
 
+    $('#schedule').on('click',  function () {
+        console.log("before Schedule show")
+        $("#sactivity").val("");
+        $("#datepicker").val("");
+        $("#sh").val("");
+        $("#sm").val("");
+        updateSchTable();
+    });
+
+    function updateSchTable() {
+        schTab.innerHTML = "";
+        toDO.forEach(item => { 
+        schTab.innerHTML += "<tr> <td>" + item.date + "</td> <td>" + item.activity + "</td> <td>" + item.time + "</td> </tr>";
+    });
+    console.log("inside sch table update");
+    }    
+    
 
     function updateTable() {
         disTab.innerHTML = "";
@@ -49,9 +72,21 @@ document.addEventListener("DOMContentLoaded", function (event) {
         tracker.push(timerActivity);
         updateTable ();        
     }
-
     
-        
+    function updatetoDo (pactivity,pdate,ptime) {
+        console.log("in updatetoDo");       
+        let Activity = new Activity(pactivity,pdate,ptime)
+        toDo.push(Activity);
+        updateSchTable ();        
+    } 
+
+    function prependZero(time, length) {
+           
+        time = '' + (time | 0);
+       
+        while (time.length < length) time = '0' + time;
+        return time;
+    }
      
    let stopwatch = $('.stopwatch').each(function () {
 
@@ -73,13 +108,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
         var hours, minutes, seconds, milliseconds, timer;
 
-        function prependZero(time, length) {
-           
-            time = '' + (time | 0);
-           
-            while (time.length < length) time = '0' + time;
-            return time;
-        }
 
         function setStopwatch(hours, minutes, seconds, milliseconds) {
             
@@ -174,9 +202,36 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
             });
             
-        });
-        
     });
+  
+    ssubmit.addEventListener('click', function (){
+        sactivity = $("#sactivity").val();
+        let hours = $("#sh").val();
+        let minutes = $("#sm").val();
+        let date = $("#datepicker").val();
+        
+        if(sactivity === "" || date === ""){
+            alert("please pick a date and activity")
+        }
+        else{
+        hours = prependZero(Math.floor((hours < 10) ? ("0" + hours) : hours) , 2);
+        minutes = prependZero(Math.floor((minutes < 10) ? ("0" + minutes) : minutes), 2);
+        let time = hours + ":" + minutes;
+
+        console.log(sactivity+", "+ date +", "+ time);
+        if(date > Date.now()){
+            updatetoDo(sactivity,date,time)
+        }
+        else{
+        updateTracker(sactivity,date,time);
+        }
+        $("#sactivity").val("");
+        $("#datepicker").val("");
+        $("#sh").val("");
+        $("#sm").val("");
+        }
+    });
+});
 
 
 

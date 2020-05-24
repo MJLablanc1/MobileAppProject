@@ -12,11 +12,11 @@
   <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css">
 
-  <script>$( function() {
-   $( "#datepicker" ).datepicker();
- } );</script>
+  <link rel="stylesheet" href="stylesheets/style.css">
   <script src="javascripts/main.js"></script>
+  
  </head>
 
  <body>
@@ -51,7 +51,7 @@
       <h1>Hobby Tracker</h1>
       <div data-role="navbar">
             <ul>
-                  <li><a href="#Schedule" data-icon="calendar" >Schedule</a></li>
+                  <li><a href="#Schedule" data-icon="calendar" id="schedule">Schedule</a></li>
                   <li><a href="#Welcome" data-icon="forward" >Welcome</a></li>
                   <li><a href="#Timer" data-icon="clock" id="timer" >Timer</a> </li>
             </ul>
@@ -106,11 +106,39 @@
 
             </div>    
             <div data-role="content" data-theme='a'>
-               <h2 id= "title">Calender</h2>
-               Date: <input type="text" id="datepicker" data-theme='c'>
-               Activity <input type=text id=activity data-theme='c'>
-               Time <input type="datetime" id=time data-theme='c'>
+                  <h2 id= "title">Calender</h2>
+                  Date: <input type="text" id="datepicker" data-theme='c'>
+                  Activity: <input type=text id=sactivity data-theme='c'>
+                 
+               <div class="ui-grid-a">                 
+                  <div class="ui-block-a">Hours: <input type="text" id='sh' data-theme='c'></div>
+                  <div class="ui-block-b">Minutes: <input type="text" id='sm' data-theme='c'></div>
+               </div>
+            <br>
+
+               <div class="ui-grid-solo" >
+                  <div class="ui-block-a"><input type="submit" id="ssubmitbtn" value="Submit" data-theme='c'> </div>
+               </div>
+               <h2>To DO:</h2>
+               <table data-role="table" data-mode="reflow" class="ui-responsive table-stroke">
+                     <thead>
+                         <tr>
+                             <th data-priority="persist">Date</th>
+                             <th data-priority="1">Activity</th>
+                             <th data-priority="1">Time dedicated</th>
+                         </tr>
+                     </thead>
+                     <tbody id="schTab">
+                         <tr>
+                             <th>This</th>
+                             <td>Should</td>
+                             <td>Be Deleted</td>
+                         </tr>
+                     </tbody>
+                 </table>
+               
             </div>
+            
     
             <div data-role="footer"  data-theme='a'>
                 <h1>Lablanc inc.</h1>
@@ -127,7 +155,7 @@
             <h1>Hobby Tracker</h1>
                <div data-role="navbar">
                      <ul>
-                        <li><a href="#Schedule" data-icon="calendar">Schedule</a></li>
+                        <li><a href="#Schedule" data-icon="calendar" id="schedule">Schedule</a></li>
                         <li><a href="#Welcome" data-icon="forward">Welcome</a></li>
                         <li><a href="#Home" data-icon="home">Home</a> </li>
                      </ul>
