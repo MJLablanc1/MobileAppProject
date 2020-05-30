@@ -3,26 +3,20 @@
 // Now comes the code that must wait to run until the document is fully loaded
 document.addEventListener("DOMContentLoaded", function (event) {
 
+    let tracker = [];
+    let toDo = [];
+
     let Activity = function (pactivity, pdate, ptime) {
         this.activity = pactivity;
         this.date = pdate;
         this.time = ptime;
         console.log("made an activity");
+
     }
 
-    let tracker = [];
-    let toDO = [];
-
-    
-    let A = new Activity("Guitar (temp)","5/15/20","3:00" );
-    let B = new Activity("Coding (temp)","5/15/20","1:00" );
-    let C = new Activity("Movie (temp)","5/15/20","4:00" );
-    tracker.push(A);
-    tracker.push(B);
-    tracker.push(C);
 
     $( function() {
-        $( "#datepicker" ).datepicker();
+        $("#datepicker").datepicker();
       } );
 
     let tsubmit = document.getElementById("tsubmitbtn");
@@ -31,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     let schTab = document.getElementById("schTab");
     let tactivity, sactivity, sh, sm;
 
-    $(document).on('pagebeforeshow', '#Home', updateTable());
+    $('#Home').on('click', updateTable());
     $('#timer').on('click',  function () {
         console.log("before Timer show")
         $("#tactivity").val("");
@@ -47,6 +41,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
 
     function updateSchTable() {
+        $.get("/getToDo",function(Serverlist, status){
+            Todo = Serverlist;
+        })
         schTab.innerHTML = "";
         toDO.forEach(item => { 
         schTab.innerHTML += "<tr> <td>" + item.date + "</td> <td>" + item.activity + "</td> <td>" + item.time + "</td> </tr>";
@@ -56,20 +53,35 @@ document.addEventListener("DOMContentLoaded", function (event) {
     
 
     function updateTable() {
+        $.get("/getTracker",function(Serverlist, status){
+            tracker = Serverlist;
+        })
         disTab.innerHTML = "";
         tracker.forEach(item => { 
         disTab.innerHTML += "<tr> <td>" + item.date + "</td> <td>" + item.activity + "</td> <td>" + item.time + "</td> </tr>";
     });
     console.log("inside table update");
-    }
+}
 
     function updateTracker (pactivity,pdate,ptime) {
         console.log("in updateTracker");
         if (pdate === null){
             pdate =  $.datepicker.formatDate('dd/mm/yy', new Date());
         }
-        let timerActivity = new Activity(pactivity,pdate,ptime)
-        tracker.push(timerActivity);
+        let newActivity = new Activity(pactivity,pdate,ptime)
+        console.log("calling Ajax")
+        console.log(newActivity.activity)
+        $.ajax({
+            url : "/AddTracker",
+            type: "POST",
+            data: JSON.stringify(newActivity),
+            contentType: "application/json; charset=utf-8",
+            dataType   : "json",
+            success: function (result) {
+                console.log(result);
+               document.location.href = "index.html#Home";  // go to this page to show item was added
+            }
+        });
         updateTable ();        
     }
     
