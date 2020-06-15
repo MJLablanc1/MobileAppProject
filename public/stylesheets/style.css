@@ -3,5 +3,31 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+#WelcomeText {
+  font-size: large;
+}
 
+#centered {
+  text-align: center;
+}
 
+td {
+  line-height: 0em;
+    text-align: left;
+    padding: 0em 0em; 
+    vertical-align: top;
+}
+
+td {
+  width: 70px;
+}
+
+#chartcontainer {
+ max-width: 500px;
+ max-height: 400px;
+}
+
+div {
+  margin-left: auto;
+  margin-right: auto;
+}

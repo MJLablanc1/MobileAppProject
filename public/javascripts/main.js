@@ -1,11 +1,22 @@
 
+ //global objects
+ let tracker = [];
+ let toDo = [];
+ let dataArr = [{t:0,y:1}];
+ let labelsArr = [];
+
+ let tactivity, sactivity, sh, sm;
 
 // Now comes the code that must wait to run until the document is fully loaded
 document.addEventListener("DOMContentLoaded", function (event) {
 
-    let tracker = [];
-    let toDo = [];
+    // Button grab
+    let tsubmit = document.getElementById("tsubmitbtn");
+    let ssubmit = document.getElementById("ssubmitbtn");
+    let disTab = document.getElementById("disTab");
+    let schTab = document.getElementById("schTab");
 
+    // Main Activity constructor
     let Activity = function (pactivity, pdate, ptime) {
         this.activity = pactivity;
         this.date = pdate;
@@ -14,24 +25,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     }
 
+    // Page functions
+    $(document).on("pagebeforeshow","#Homepage",function(){
+        updates()
+      });
 
-    $( function() {
-        $("#datepicker").datepicker();
-      } );
-
-    let tsubmit = document.getElementById("tsubmitbtn");
-    let ssubmit = document.getElementById("ssubmitbtn");
-    let disTab = document.getElementById("disTab");
-    let schTab = document.getElementById("schTab");
-    let tactivity, sactivity, sh, sm;
-
-    $('#Home').on('click', updateTable());
-    $('#timer').on('click',  function () {
+    $(document).on("pagebeforeshow","#Timer",function(){
         console.log("before Timer show")
         $("#tactivity").val("");
-    }); 
+    });
 
-    $('#schedule').on('click',  function () {
+    $(document).on("pagebeforeshow","#Schedule",function(){
         console.log("before Schedule show")
         $("#sactivity").val("");
         $("#datepicker").val("");
@@ -39,68 +43,45 @@ document.addEventListener("DOMContentLoaded", function (event) {
         $("#sm").val("");
         updateSchTable();
     });
-
-    function updateSchTable() {
-        $.get("/getToDo",function(Serverlist, status){
-            Todo = Serverlist;
-        })
-        schTab.innerHTML = "";
-        toDO.forEach(item => { 
-        schTab.innerHTML += "<tr> <td>" + item.date + "</td> <td>" + item.activity + "</td> <td>" + item.time + "</td> </tr>";
-    });
-    console.log("inside sch table update");
-    }    
     
-
-    function updateTable() {
-        $.get("/getTracker",function(Serverlist, status){
-            tracker = Serverlist;
-        })
-        disTab.innerHTML = "";
-        tracker.forEach(item => { 
-        disTab.innerHTML += "<tr> <td>" + item.date + "</td> <td>" + item.activity + "</td> <td>" + item.time + "</td> </tr>";
-    });
-    console.log("inside table update");
-}
-
-    function updateTracker (pactivity,pdate,ptime) {
-        console.log("in updateTracker");
-        if (pdate === null){
-            pdate =  $.datepicker.formatDate('dd/mm/yy', new Date());
+    // Schedule submit function
+    ssubmit.addEventListener('click', function (){
+        sactivity = $("#sactivity").val();
+        let hours = $("#sh").val();
+        let minutes = $("#sm").val();
+        let date = $("#datepicker").val();
+        let tDate = $("#datepicker").datepicker('getDate');
+        
+        if(sactivity === "" || date === ""){
+            alert("please pick a date and activity")
         }
-        let newActivity = new Activity(pactivity,pdate,ptime)
-        console.log("calling Ajax")
-        console.log(newActivity.activity)
-        $.ajax({
-            url : "/AddTracker",
-            type: "POST",
-            data: JSON.stringify(newActivity),
-            contentType: "application/json; charset=utf-8",
-            dataType   : "json",
-            success: function (result) {
-                console.log(result);
-               document.location.href = "index.html#Home";  // go to this page to show item was added
-            }
-        });
-        updateTable ();        
-    }
-    
-    function updatetoDo (pactivity,pdate,ptime) {
-        console.log("in updatetoDo");       
-        let Activity = new Activity(pactivity,pdate,ptime)
-        toDo.push(Activity);
-        updateSchTable ();        
-    } 
+        else{
+        hours = prependZero(Math.floor((hours < 10) ? ("0" + hours) : hours) , 2);
+        minutes = prependZero(Math.floor((minutes < 10) ? ("0" + minutes) : minutes), 2);
+        let time = hours + ":" + minutes;
 
-    function prependZero(time, length) {
-           
-        time = '' + (time | 0);
-       
-        while (time.length < length) time = '0' + time;
-        return time;
-    }
-     
-   let stopwatch = $('.stopwatch').each(function () {
+        console.log(sactivity+", "+ date +", "+ time);
+        let now = new Date();
+        if(tDate > now){
+            updatetoDo(sactivity,date,time)
+        }
+        if(tDate < now){
+        updateTracker(sactivity,date,time);
+        }
+        $("#sactivity").val("");
+        $("#datepicker").val("");
+        $("#sh").val("");
+        $("#sm").val("");
+        }
+    });    
+
+    // datapicker function
+    $( function() {
+        $("#datepicker").datepicker();
+      } );
+
+      // Stopwatch function
+      let stopwatch = $('.stopwatch').each(function () {
 
         var element = $(this);
         var running = element.data('autostart');
@@ -177,13 +158,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
             reset();
         });
 
-        $('#timer').on('click', function () { console.log("stopwatch clicked"); reset()});
+        //nested page transition for stopwatch reset
+        $(document).on("pagebeforeshow","#Timer",function(){
+            reset();
+        });
+
 
         reset();
         if(running) run();
 
+        //timer sumbit function
         tsubmit.addEventListener('click', function (){
-            let go = true;
+            let go = true; // error catcher
             tactivity = $("#tactivity").val();
             console.log("te: " + timeElapsed + ". pH: " + prevHours + ". pM: " +prevMinutes)
             let hours = (timeElapsed / 3600000) + prevHours;
@@ -215,34 +201,147 @@ document.addEventListener("DOMContentLoaded", function (event) {
             });
             
     });
-  
-    ssubmit.addEventListener('click', function (){
-        sactivity = $("#sactivity").val();
-        let hours = $("#sh").val();
-        let minutes = $("#sm").val();
-        let date = $("#datepicker").val();
-        
-        if(sactivity === "" || date === ""){
-            alert("please pick a date and activity")
-        }
-        else{
-        hours = prependZero(Math.floor((hours < 10) ? ("0" + hours) : hours) , 2);
-        minutes = prependZero(Math.floor((minutes < 10) ? ("0" + minutes) : minutes), 2);
-        let time = hours + ":" + minutes;
+    
+    // The Graoh!!
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'hours spent',
+                data: [{x:1,y:0},{x:4,y:2},{x:8,y:3},{x:2,y:4}],
+                backgroundColor: ['rgba(00,00,200,0.2)'],
+                borderColor: [],
+                borderWidth: 1
+                        }]
+            },
+        options: {
+            tooltips:{ 
+                enabled: false
+                     },
+            legend: {display: false},
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1,
+                            }
+                        }],
+                        
+                xAxes: [{
+                    display: false,
+                    type:'time',
+                        }]
+                    }        
+                }
+                            });
+    
+    // Places Zeros in time value                      
+    function prependZero(time, length) {
+           
+        time = '' + (time | 0);
+       
+        while (time.length < length) time = '0' + time;
+        return time;
+    }  
 
-        console.log(sactivity+", "+ date +", "+ time);
-        if(date > Date.now()){
-            updatetoDo(sactivity,date,time)
-        }
-        else{
-        updateTracker(sactivity,date,time);
-        }
-        $("#sactivity").val("");
-        $("#datepicker").val("");
-        $("#sh").val("");
-        $("#sm").val("");
-        }
+    // updates table and chart
+    function updates(){
+        console.log("before home show");
+        $.get("/getTracker",function(Serverlist, status){
+            tracker = Serverlist;
+            tracker.sort((a, b) => b.date - a.date);
+        console.log(tracker);     
+        updateTable();
+        updateChart();
     });
+    }
+
+    //Update table functions
+    function updateSchTable() {
+        console.log("in get tracker");
+        $.get("/getToDo",function(Serverlist, status){
+            toDo = Serverlist;
+       
+        schTab.innerHTML = "";
+        toDo.forEach(item => { 
+        schTab.innerHTML += "<tr> <td>" + item.date + "</td> <td>" + item.activity + "</td> <td>" + item.time + "</td> </tr>";
+    })
+    });
+    console.log("inside sch table update");
+    }    
+    
+
+    function updateTable() {
+       console.log("inside table update")
+        disTab.innerHTML = "";
+        tracker.forEach(item => { 
+        disTab.innerHTML += "<tr> <td>" + item.date + "</td> <td>" + item.activity + "</td> <td>" + item.time + "</td> </tr>";
+                                });
+                            }
+                            
+    function updateChart(){
+        console.log("in update chart");
+        chart.data.datasets[0].data.pop();
+        dataArr = [];
+        labelsArr = []; 
+
+        tracker.forEach(item => {
+            date = item.date.replace(/\//g,"-");
+            date = moment(date, "mm-dd-yyyy")
+            time =item.time.split(":");
+            let datum = {t:date , y: time[0]};
+            dataArr.push(datum);
+            labelsArr.push(date);
+                                });
+
+        console.log("after for each")        
+        dataArr.sort((a, b) => a.t - b.t);
+        console.log(dataArr);
+        chart.data.datasets[0].data = dataArr;
+        console.log(labelsArr);
+     // chart.data.labels = labelsArr;
+        chart.update();
+                            };
+
+
+    //Update Lists functions
+    function updateTracker (pactivity,pdate,ptime) {
+        console.log("in updateTracker");
+        if (pdate === null){
+            pdate =  $.datepicker.formatDate('dd/mm/yy', new Date());
+        }
+        let newActivity = new Activity(pactivity,pdate,ptime);
+        $.ajax({
+            url : "/AddTracker",
+            type: "POST",
+            data: JSON.stringify(newActivity),
+            contentType: "application/json; charset=utf-8",
+            dataType   : "json",
+            success: function (result) {
+                console.log(result);
+            }
+        });
+        updateTable ();        
+    }
+    
+    function updatetoDo (pactivity,pdate,ptime) {  
+        let newActivity = new Activity(pactivity,pdate,ptime)
+        $.ajax({
+            url : "/AddToDo",
+            type: "POST",
+            data: JSON.stringify(newActivity),
+            contentType: "application/json; charset=utf-8",
+            dataType   : "json",
+            success: function (result) {
+                console.log(result);
+            }
+        });
+        updateSchTable();        
+    }
+
+    
 });
 
 
