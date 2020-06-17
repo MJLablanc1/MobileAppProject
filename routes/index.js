@@ -43,5 +43,55 @@ router.post('/AddToDo', function(req, res) {
   res.sendStatus(200);
 });
 
+router.delete('/DeleteAct/:parm', (req, res) => {
+  const delparm = req.params.parm;
+  let found = false;
+  console.log("delparm in server is: " + delparm)
+
+  for(var i = 0; i < Servertracker.length; i++) // find the match
+  {
+    console.log("in for loop i is "+ i )
+      if(i == delparm){
+        console.log("in if")
+        Servertracker.splice(i,1);  // remove object from array
+          found = true;
+      }
+  }
+
+  if (!found) {
+    console.log("not found");
+    return res.status(500).json({
+      status: "error"
+    });
+  } else {
+  res.send('Movie with ID: ' + delID + ' deleted!');
+  }
+});
+
+router.delete('/DeletetoDo/:parm', (req, res) => {
+  const delparm = req.params.parm;
+  let found = false;
+  console.log("delparm in server is: " + delparm)
+
+  for(var i = 0; i < ServerToDo.length; i++) // find the match
+  {
+    console.log("in for loop i is "+ i )
+      if(i == delparm){
+        console.log("in if")
+        ServerToDo.splice(i,1);  // remove object from array
+          found = true;
+      }
+  }
+
+  if (!found) {
+    console.log("not found");
+    return res.status(500).json({
+      status: "error"
+    });
+  } else {
+  res.send('Movie with ID: ' + delID + ' deleted!');
+  }
+});
+
 
 module.exports = router;

@@ -79,9 +79,10 @@
       </canvas>
      </div>
      <div >
-      <table data-role="table" data-mode="reflow" class="ui-responsive">
+         <table data-role="table" data-mode="reflow" class="ui-responsive" id='myTable'>
          <thead data-theme="a" style="height: 50px;">
              <tr>
+                 <th>Index</th>  
                  <th>Date</th>
                  <th>Activity</th>
                  <th>Time dedicated</th>
@@ -125,8 +126,8 @@
                   Activity: <input type=text id=sactivity data-theme='c'>
                  
                <div class="ui-grid-a">                 
-                  <div class="ui-block-a">Hours: <input type="text" id='sh' data-theme='c'></div>
-                  <div class="ui-block-b">Minutes: <input type="text" id='sm' data-theme='c'></div>
+                  <div class="ui-block-a">Hours: <input type="text" id='sh' data-theme='c' maxlength="2"></div>
+                  <div class="ui-block-b">Minutes: <input type="text" id='sm' data-theme='c'maxlength="2"></div>
                </div>
             <br>
 
@@ -134,12 +135,13 @@
                   <div class="ui-block-a"><input type="submit" id="ssubmitbtn" value="Submit" data-theme='c'> </div>
                </div>
                <h2>To DO:</h2>
-               <table data-role="table" data-mode="reflow" class="ui-responsive table-stroke">
+               <table data-role="table" data-mode="reflow" class="ui-responsive table-stroke" id="schtable">
                      <thead>
                          <tr>
-                             <th data-priority="persist">Date</th>
-                             <th data-priority="1">Activity</th>
-                             <th data-priority="1">Time dedicated</th>
+                              <th>Index</th>  
+                             <th>Date</th>
+                             <th>Activity</th>
+                             <th>Time dedicated</th>
                          </tr>
                      </thead>
                      <tbody id="schTab">
@@ -209,6 +211,48 @@
                 <h1>Lablanc inc.</h1>
             </div>
     
+</div>
+
+<div data-role="page" id="Delete">
+
+   <div data-role="header" data-theme='a'> 
+      <h1 id= "title">Hobby Tracker</h1>
+   </div>
+   <div data-role="content" id = "centered" data-theme='a'>
+      <h2>Are you sure you want to delete this?</h2>
+      <div>
+         <div>
+         <span id = "Ddate">Date</span>, <span id = "Dactivity">Activity</span> for <span id = "Dtime">Time</span> hours.<br/>
+         </div>
+         <input type="button" id="backbtn" value= "back" data-transition="flip" data-theme='c'> <input type="submit" id="deletebtn" value="yes" data-theme='c'>
+      </div>
+   </div>
+
+   <div data-role="footer" data-theme='a'>
+      <h1>Lablanc inc.</h1>
+   </div>
+
+</div>
+
+<div data-role="page" id="DeletetoDo">
+
+   <div data-role="header" data-theme='a'> 
+      <h1 id= "title">Hobby Tracker</h1>
+   </div>
+   <div data-role="content" id = "centered" data-theme='a'>
+      <h2>Are you sure you want to delete this?</h2>
+      <div>
+         <div>
+         <span id = "Dsdate">Date</span>, to do: <span id = "Dsactivity">Activity</span> for <span id = "Dstime">Time</span> hours. <br/>
+         </div>
+         <input type="button" id="backbtnsch" value= "back" data-transition="flip" data-theme='c'> <input type="submit" id="deletebtnsch" value="yes" data-theme='c'>
+      </div>
+   </div>
+
+   <div data-role="footer" data-theme='a'>
+      <h1>Lablanc inc.</h1>
+   </div>
+
 </div>
 
  </body>

@@ -4,13 +4,14 @@
  let toDo = [];
  let dataArr = [{t:0,y:1}];
  let labelsArr = [];
+ let parm;
 
  let tactivity, sactivity, sh, sm;
 
 // Now comes the code that must wait to run until the document is fully loaded
 document.addEventListener("DOMContentLoaded", function (event) {
 
-    // Button grab
+    // Button/table grab
     let tsubmit = document.getElementById("tsubmitbtn");
     let ssubmit = document.getElementById("ssubmitbtn");
     let disTab = document.getElementById("disTab");
@@ -43,6 +44,24 @@ document.addEventListener("DOMContentLoaded", function (event) {
         $("#sm").val("");
         updateSchTable();
     });
+
+    $(document).on("pagebeforeshow", "#Delete", function (event) {  
+        setTimeout(() => {  
+            console.log(parm)
+            document.getElementById("Dtime").innerHTML = "" + tracker[parm].time;
+            document.getElementById("Dactivity").innerHTML = "" + tracker[parm].activity;
+            document.getElementById("Ddate").innerHTML = "" + tracker[parm].date;
+        }, 1);
+      });
+
+      $(document).on("pagebeforeshow", "#DeletetoDo", function (event) {  
+        setTimeout(() => {  
+            console.log(parm)
+            document.getElementById("Dstime").innerHTML = "" + toDo[parm].time;
+            document.getElementById("Dsactivity").innerHTML = "" + toDo[parm].activity;
+            document.getElementById("Dsdate").innerHTML = "" + toDo[parm].date;
+        }, 1);
+      });
     
     // Schedule submit function
     ssubmit.addEventListener('click', function (){
@@ -202,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             
     });
     
-    // The Graoh!!
+    // The Graph!!
     var ctx = document.getElementById('myChart').getContext('2d');
     var chart = new Chart(ctx, {
         type: 'line',
@@ -252,7 +271,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         $.get("/getTracker",function(Serverlist, status){
             tracker = Serverlist;
             tracker.sort((a, b) => b.date - a.date);
-        console.log(tracker);     
+        console.log(tracker);
+        disTab.innerHTML = "";     
         updateTable();
         updateChart();
     });
@@ -265,9 +285,26 @@ document.addEventListener("DOMContentLoaded", function (event) {
             toDo = Serverlist;
        
         schTab.innerHTML = "";
+        let i = 0;
         toDo.forEach(item => { 
-        schTab.innerHTML += "<tr> <td>" + item.date + "</td> <td>" + item.activity + "</td> <td>" + item.time + "</td> </tr>";
-    })
+        var tr = document.createElement("tr");
+        schTab.appendChild(tr);
+        tr.setAttribute('id', i);
+       
+        schTab.innerHTML += " <td>  " + i  + "</td> <td>"  + item.date + "</td> <td>" + item.activity +  "</td> <td>" + item.time + "</td>";
+        i++;
+        console.log(tr.getAttribute('id') );
+        });
+        
+ 
+        document.querySelectorAll('#schtable tr')
+            .forEach(e => e.addEventListener("click", function() {
+                var temp = this.getElementsByTagName('td');  // `this` refers to the element the event was hooked on
+                 parm = Number(temp[0].innerHTML);
+                         
+            console.log(parm);
+            document.location.href = "index.html#DeletetoDo";
+}));
     });
     console.log("inside sch table update");
     }    
@@ -275,12 +312,28 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     function updateTable() {
        console.log("inside table update")
-        disTab.innerHTML = "";
+       let i = 0;
         tracker.forEach(item => { 
-        disTab.innerHTML += "<tr> <td>" + item.date + "</td> <td>" + item.activity + "</td> <td>" + item.time + "</td> </tr>";
-                                });
-                            }
-                            
+        var tr = document.createElement("tr");
+        disTab.appendChild(tr);
+        tr.setAttribute('id', i);
+       
+        disTab.innerHTML += " <td hidden>  " + i  + "</td> <td>"  + item.date + "</td> <td>" + item.activity +  "</td> <td>" + item.time + "</td>";
+        i++;
+        console.log(tr.getAttribute('id') );
+        });
+        
+ 
+        document.querySelectorAll('#myTable tr')
+            .forEach(e => e.addEventListener("click", function() {
+                var temp = this.getElementsByTagName('td');  // `this` refers to the element the event was hooked on
+                 parm = Number(temp[0].innerHTML);
+                         
+            console.log(parm);
+            document.location.href = "index.html#Delete";
+}));
+    };
+                                        
     function updateChart(){
         console.log("in update chart");
         chart.data.datasets[0].data.pop();
@@ -322,8 +375,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             success: function (result) {
                 console.log(result);
             }
-        });
-        updateTable ();        
+        });        
     }
     
     function updatetoDo (pactivity,pdate,ptime) {  
@@ -341,6 +393,46 @@ document.addEventListener("DOMContentLoaded", function (event) {
         updateSchTable();        
     }
 
+    // Delete functions:
+    // home data
+    $("#backbtn").on('click', function(){
+        document.location.href = "index.html#Homepage";
+    })
+
+    $('#deletebtn').on('click', function(){
+        $.ajax({
+            type: "DELETE",
+                url: "/DeleteAct/" + parm ,
+                success: function(result){
+                    console.log(result);
+                    document.location.href = "index.html#Homepage";  // go to this page to show item was deleted
+                },
+                error: function (xhr, textStatus, errorThrown) {  
+                    console.log('Error in Operation');  
+                }  
+            });
+            document.location.href = "index.html#Homepage";
+    })
+
+    //Schedule data
+    $("#backbtnsch").on('click', function(){
+        document.location.href = "index.html#Schedule";
+    })
+    
+    $('#deletebtnsch').on('click', function(){
+        $.ajax({
+            type: "DELETE",
+                url: "/DeletetoDO/" + parm ,
+                success: function(result){
+                    console.log(result);
+                    document.location.href = "index.html#Homepage";  // go to this page to show item was deleted
+                },
+                error: function (xhr, textStatus, errorThrown) {  
+                    console.log('Error in Operation');  
+                }  
+            });
+            document.location.href = "index.html#Schedule";
+    })
     
 });
 

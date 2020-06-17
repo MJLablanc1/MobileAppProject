@@ -27,6 +27,10 @@ td {
  max-height: 400px;
 }
 
+#myChart {
+  pointer-events: none;
+}
+
 div {
   margin-left: auto;
   margin-right: auto;
